@@ -10,8 +10,8 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak var productsCollectionView: UICollectionView!
-    @IBOutlet weak var totalLabel: UILabel!
-    @IBOutlet weak var cartImageView: UIImageView!
+    //@IBOutlet weak var totalLabel: UILabel!
+    //@IBOutlet weak var cartImageView: UIImageView!
     
     var products =
     [Product(name: "Apple", picture: UIImage(named: "Apple")!, price: 45.50),
@@ -24,24 +24,40 @@ class ViewController: UIViewController {
 //    var total = Array(repeating: 0, count: products.count)
     var total = Array(repeating: 0, count: 6)
     
+    var cartButton = UIButton()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        totalLabel.text = "0"
+        //totalLabel.text = "0"
         
         setupCollectionView()
         
-        cartImageView.isUserInteractionEnabled = true
-        let  tap = UITapGestureRecognizer(target: self, action: #selector(goToCart))
-        cartImageView.addGestureRecognizer(tap)
+        //cartImageView.isUserInteractionEnabled = true
+        //let  tap = UITapGestureRecognizer(target: self, action: #selector(goToCart))
+        //cartImageView.addGestureRecognizer(tap)
+        
+        cartButton.backgroundColor = .green
+        cartButton.setTitle("0", for: .normal)
+        cartButton.titleLabel?.font = .boldSystemFont(ofSize: 40)
+        
+        cartButton.addTarget(self, action: #selector(goToCart), for: .touchUpInside)
+        cartButton.layer.cornerRadius = (view.frame.width / 4) / 2
+        
+        view.addSubview(cartButton)
+        cartButton.translatesAutoresizingMaskIntoConstraints = false
+        cartButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -40).isActive = true
+        cartButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -40).isActive = true
+        cartButton.widthAnchor.constraint(equalToConstant: view.frame.width / 4).isActive = true
+        cartButton.heightAnchor.constraint(equalToConstant: view.frame.width / 4).isActive = true
     }
    
     func setupCollectionView() {
         
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 20
-        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 10
         //layout.scrollDirection = .horizontal
         productsCollectionView.collectionViewLayout = layout
         
@@ -85,7 +101,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        return CGSize(width: 200, height: 200)
+        return CGSize(width: 175, height: 175)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -97,7 +113,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
             sum += productTotal
         }
         
-        totalLabel.text = "\(sum)"
+        cartButton.setTitle("\(sum)", for: .normal)
     }
 }
 

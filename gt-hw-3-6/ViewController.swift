@@ -14,15 +14,19 @@ class ViewController: UIViewController {
     //@IBOutlet weak var cartImageView: UIImageView!
     
     var products =
-    [Product(name: "Apple", picture: UIImage(named: "Apple")!, price: 45.50),
-     Product(name: "Pear", picture: UIImage(named: "Pear")!, price: 63.50),
-     Product(name: "Plum", picture: UIImage(named: "Plum")!, price: 74.50),
-     Product(name: "Apricot", picture: UIImage(named: "Apricot")!, price: 98.50),
-     Product(name: "Tomato", picture: UIImage(named: "Tomato")!, price: 33.50),
-     Product(name: "Cucumber", picture: UIImage(named: "Cucumber")!, price: 28.50)]
+    [Product(name: "Apple", picture: UIImage(named: "Apple")!, price: 45.50, id: 0),
+     Product(name: "Pear", picture: UIImage(named: "Pear")!, price: 63.50, id: 1),
+     Product(name: "Plum", picture: UIImage(named: "Plum")!, price: 74.50, id: 2),
+     Product(name: "Apricot", picture: UIImage(named: "Apricot")!, price: 98.50, id: 3),
+     Product(name: "Tomato", picture: UIImage(named: "Tomato")!, price: 33.50, id: 4),
+     Product(name: "Cucumber", picture: UIImage(named: "Cucumber")!, price: 28.50, id: 5)]
    
 //    var total = Array(repeating: 0, count: products.count)
-    var total = Array(repeating: 0, count: 6)
+//    var total = Array(repeating: 0, count: 6)
+//    var total = [Int:Int]()
+    var cartProducts = [Int:Int]()
+    
+    var totalSum = 0
     
     var cartButton = UIButton()
     
@@ -70,8 +74,10 @@ class ViewController: UIViewController {
     @objc func goToCart() {
         let cartScreen = SecondViewController()
         
-        cartScreen.total = total
+//        cartScreen.total = total
+        
         cartScreen.products = products
+        cartScreen.cartProducts = cartProducts
         
         present(cartScreen, animated: false)
         
@@ -105,15 +111,17 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        total[indexPath.row] += 1
-        
-        var sum = 0
-        for productTotal in total {
-            sum += productTotal
+
+        let id = products[indexPath.row].id
+        if cartProducts[id] == nil {
+            cartProducts[id] = 1
+        } else {
+            cartProducts[id]! += 1
         }
         
-        cartButton.setTitle("\(sum)", for: .normal)
+        totalSum += 1
+        
+        cartButton.setTitle("\(totalSum)", for: .normal)
     }
 }
 
@@ -122,7 +130,7 @@ class SecondViewController: UIViewController {
     var cartTableView = UITableView()
     var totalLabel = UILabel()
     
-    var total = [Int]()
+    var cartProducts = [Int:Int]()
     var products = [Product]()
     
     override func viewDidLoad() {
@@ -154,9 +162,12 @@ class SecondViewController: UIViewController {
         var totalSum = 0.0
         var totalNum = 0
         
-        for i in 0...products.count - 1 {
-            totalSum += Double(products[i].price * Float(total[i]))
-            totalNum += total[i]
+        for cartProduct in cartProducts {
+            
+            if let product = products.first(where: { $0.id == cartProduct.key }) {
+                totalSum += Double(product.price * Float(cartProduct.value))
+                totalNum += cartProduct.value
+            }
         }
         totalLabel.text = "Total: \(totalNum). Sum: \(totalSum)"
     }
@@ -164,33 +175,43 @@ class SecondViewController: UIViewController {
 
 extension SecondViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return products.count
+        return cartProducts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let id = Array(cartProducts.keys)[indexPath.row]
+        let amount = Array(cartProducts.values)[indexPath.row]
+       
         let cell = UITableViewCell(style: .default, reuseIdentifier: "product_cell")
-
-        cell.imageView?.image = products[indexPath.row].picture
         
-        cell.imageView?.translatesAutoresizingMaskIntoConstraints = false
-        cell.imageView?.leftAnchor.constraint(equalTo: cell.leftAnchor, constant: 0).isActive = true
-        cell.imageView?.topAnchor.constraint(equalTo: cell.topAnchor, constant: 0).isActive = true
-        cell.imageView?.widthAnchor.constraint(equalTo: cell.heightAnchor).isActive = true
-        cell.imageView?.heightAnchor.constraint(equalTo: cell.heightAnchor).isActive = true
-        
-        let totalPrice = products[indexPath.row].price * Float(total[indexPath.row])
-        cell.textLabel?.text = products[indexPath.row].name + ": \(total[indexPath.row]) by \(products[indexPath.row].price). Total: \(totalPrice)"
-        //cell.textLabel?.textAlignment = .right
-        
-        cell.textLabel?.translatesAutoresizingMaskIntoConstraints = false
-        cell.textLabel?.leftAnchor.constraint(equalTo: cell.imageView!.rightAnchor, constant: 0).isActive = true
-        cell.textLabel?.rightAnchor.constraint(equalTo: cell.rightAnchor).isActive = true
-        cell.textLabel?.topAnchor.constraint(equalTo: cell.topAnchor, constant: 0).isActive = true
-        cell.textLabel?.heightAnchor.constraint(equalTo: cell.heightAnchor).isActive = true
+        if let product = products.first(where: { $0.id == id }) {
+            
+            cell.imageView?.image = product.picture
+            
+            cell.imageView?.translatesAutoresizingMaskIntoConstraints = false
+            cell.imageView?.leftAnchor.constraint(equalTo: cell.leftAnchor, constant: 0).isActive = true
+            cell.imageView?.topAnchor.constraint(equalTo: cell.topAnchor, constant: 0).isActive = true
+            cell.imageView?.widthAnchor.constraint(equalTo: cell.heightAnchor).isActive = true
+            cell.imageView?.heightAnchor.constraint(equalTo: cell.heightAnchor).isActive = true
+            
+            let totalPrice = product.price * Float(amount)
+            cell.textLabel?.text = product.name + ": \(amount) by \(product.price). Total: \(totalPrice)"
+            //cell.textLabel?.textAlignment = .right
+            
+            cell.textLabel?.translatesAutoresizingMaskIntoConstraints = false
+            cell.textLabel?.leftAnchor.constraint(equalTo: cell.imageView!.rightAnchor, constant: 0).isActive = true
+            cell.textLabel?.rightAnchor.constraint(equalTo: cell.rightAnchor).isActive = true
+            cell.textLabel?.topAnchor.constraint(equalTo: cell.topAnchor, constant: 0).isActive = true
+            cell.textLabel?.heightAnchor.constraint(equalTo: cell.heightAnchor).isActive = true
+        }
         
         return cell
     }
-    
-    
+}
+
+extension SecondViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 200
+    }
 }

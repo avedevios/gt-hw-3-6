@@ -10,6 +10,5 @@ import UIKit
 struct Product {
     var name: String
     var picture: UIImage
-    var price: Float
-    var id: Int
+    var price: Double
 }

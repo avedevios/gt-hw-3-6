@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="dvp-N7-Nvg">
-                                <rect key="frame" x="0.0" y="47" width="375" height="731"/>
+                                <rect key="frame" x="0.0" y="101" width="375" height="677"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="qVd-dj-zui">
                                     <size key="itemSize" width="128" height="128"/>
@@ -80,17 +80,31 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="m8P-h9-5LR"/>
                                 </connections>
                             </collectionView>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="3Jf-d0-LQo">
+                                <rect key="frame" x="0.0" y="47" width="375" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="3Uk-6T-wDu"/>
+                                </constraints>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="d7r-xZ-mLf"/>
+                                </connections>
+                            </searchBar>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dvp-N7-Nvg" secondAttribute="trailing" id="0bK-sf-hxi"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="dvp-N7-Nvg" secondAttribute="bottom" id="BUU-fa-2Ta"/>
-                            <constraint firstItem="dvp-N7-Nvg" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="M28-lC-UZk"/>
+                            <constraint firstItem="dvp-N7-Nvg" firstAttribute="top" secondItem="3Jf-d0-LQo" secondAttribute="bottom" constant="10" id="M28-lC-UZk"/>
                             <constraint firstItem="dvp-N7-Nvg" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="V6q-Ax-cYd"/>
+                            <constraint firstItem="3Jf-d0-LQo" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="dwn-tj-4Wv"/>
+                            <constraint firstItem="3Jf-d0-LQo" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="pIB-yY-Dcz"/>
+                            <constraint firstItem="3Jf-d0-LQo" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="pWW-YG-kHE"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="productSearchBar" destination="3Jf-d0-LQo" id="dWc-Xf-Fa5"/>
                         <outlet property="productsCollectionView" destination="dvp-N7-Nvg" id="sih-I2-uym"/>
                     </connections>
                 </viewController>

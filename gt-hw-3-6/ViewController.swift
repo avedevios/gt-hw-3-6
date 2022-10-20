@@ -12,6 +12,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var productsCollectionView: UICollectionView!
     //@IBOutlet weak var totalLabel: UILabel!
     //@IBOutlet weak var cartImageView: UIImageView!
+    @IBOutlet weak var productSearchBar: UISearchBar!
     
     var products =
     [Product(name: "Apple", picture: UIImage(named: "Apple")!, price: 45.50),
@@ -25,6 +26,7 @@ class ViewController: UIViewController {
     //    var total = Array(repeating: 0, count: 6)
     //    var total = [Int:Int]()
     var cartProducts = [Product]()
+    var filteredProducts = [Product]()
     
     var totalSum = 0
     
@@ -34,13 +36,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        //totalLabel.text = "0"
+        filteredProducts = products
         
         setupCollectionView()
-        
-        //cartImageView.isUserInteractionEnabled = true
-        //let  tap = UITapGestureRecognizer(target: self, action: #selector(goToCart))
-        //cartImageView.addGestureRecognizer(tap)
         
         cartButton.backgroundColor = .green
         cartButton.setTitle("0", for: .normal)
@@ -84,16 +82,16 @@ class ViewController: UIViewController {
 extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return products.count
+        return filteredProducts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "product_cell", for: indexPath) as! ProductCell
         
-        cell.nameLabel.text = products[indexPath.row].name
-        cell.pictureImageView.image = products[indexPath.row].picture
-        cell.priceLabel.text = "\(products[indexPath.row].price) сом"
+        cell.nameLabel.text = filteredProducts[indexPath.row].name
+        cell.pictureImageView.image = filteredProducts[indexPath.row].picture
+        cell.priceLabel.text = "\(filteredProducts[indexPath.row].price) сом"
         
         return cell
     }
@@ -126,7 +124,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
                 var counter = 0
                 
                 while counter < amount {
-                    self.cartProducts.append(self.products[indexPath.row])
+                    self.cartProducts.append(self.filteredProducts[indexPath.row])
                     
                     counter += 1
                 }
@@ -146,6 +144,24 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
         
         present(alertController, animated: true, completion: nil)
 
+    }
+}
+
+extension ViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filteredProducts = []
+        
+        if searchText == "" {
+            filteredProducts = products
+        }
+        
+        for product in products {
+            if product.name.uppercased().contains(searchText.uppercased()) {
+                filteredProducts.append(product)
+            }
+        }
+        
+        productsCollectionView.reloadData()
     }
 }
 
@@ -225,3 +241,5 @@ extension SecondViewController: UITableViewDelegate {
         return 300
     }
 }
+
+

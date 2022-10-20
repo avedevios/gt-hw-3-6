@@ -109,11 +109,43 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        cartProducts.append(products[indexPath.row])
+        let alertController = UIAlertController(title: "Question", message: "How much do you want to add in cart?", preferredStyle: .alert)
         
-        totalSum += 1
+        var textField = UITextField()
         
-        cartButton.setTitle("\(totalSum)", for: .normal)
+        alertController.addTextField { text in
+            textField = text
+        }
+        
+        let actionOk = UIAlertAction(title: "Ok", style: .cancel) { [self] action in
+            //print(self.filteredNames[indexPath.row])
+            
+            let inputText = textField.text!
+            
+            if let amount = Int(inputText) {
+                var counter = 0
+                
+                while counter < amount {
+                    self.cartProducts.append(self.products[indexPath.row])
+                    
+                    counter += 1
+                }
+                
+                self.totalSum += amount
+                
+                self.cartButton.setTitle("\(totalSum)", for: .normal)
+            }
+        }
+        
+        let actionCancel = UIAlertAction(title: "Cancel", style: .destructive) { action in
+            ()
+        }
+        
+        alertController.addAction(actionOk)
+        alertController.addAction(actionCancel)
+        
+        present(alertController, animated: true, completion: nil)
+
     }
 }
 
